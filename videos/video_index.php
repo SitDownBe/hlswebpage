@@ -1,6 +1,6 @@
 <?php
 
-$files = scandir("/var/www/html/hls.player/videos/");
+$files = scandir("/var/www/html/hlswebpage/videos/");
 
 foreach ($files as $value)
 {

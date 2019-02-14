@@ -22,5 +22,5 @@ xmlhttp.onreadystatechange = function()
 		}
 	};
 
-xmlhttp.open("GET", "http://localhost/hls.player/videos/video_index.php", true);
+xmlhttp.open("GET", "http://localhost/hlswebpage/videos/video_index.php", true);
 xmlhttp.send();

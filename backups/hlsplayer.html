@@ -1,0 +1,65 @@
+
+<!DOCTYPE HTML>
+<html lang="en-US">
+
+<head>
+	<meta charset="utf-8"/>
+	<script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+</head>
+
+<body>
+	<select id="videoDropdown"></select>
+	<button onclick="playVideo()">Load</button>
+	<video id="video" controls></video>
+	<script src="/hlswebpage/js/video_dropdown.js"></script>
+	<script src="/hlswebpage/js/load_hls.js"></script>	
+</body>
+
+</html>
+
+<!--
+<video width="320" height="240" controls>
+	<source src="Earth.mp4" type="video/mp4">
+	Your browser does not support the video tag.
+</video>
+-->
+
+<!-- Simple AngularJS directive and use of Videogular.
+	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.26/angular.min.js"></script>
+	<div ng-app="loadURL" ng-controller="ctrlURL">
+		<p>Enter URL to .m3u8 playlist</p>
+	  	<p>URL: <input type="text" ng-model="url"></p>
+	</div>
+		var app = angular.module("loadURL", []);
+	app.controller('ctrlURL', function($scope) {
+		$scope.url = "/home/workingpotato/Documents/Kandidat/Polisen/KandidatSvenskPolis/webapp/earth_singlefile.m3u8";
+	});
+
+<div ng-app="">
+	<p>Write something in the box. It does nothing.</p>
+  	<p>Name: <input type="text" ng-model="name"></p>
+  	<p ng-bind="name"></p>
+</div>
+
+<head>
+<link rel="stylesheet" type="text/css" href="mystyle.css">
+</head>
+
+<div ng-app="myApp">
+<div ng-controller="HomeCtrl as controller" class="videogular-container">
+    <videogular vg-theme="controller.config.theme.url">
+        <vg-media vg-src="controller.config.sources"
+                  vg-tracks="controller.config.tracks"
+                  vg-native-controls="true">
+        </vg-media>
+    </videogular>
+</div>
+</div>
+
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.26/angular.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.26/angular-sanitize.min.js"></script>
+<script src="https://unpkg.com/videogular@2.1.2/dist/videogular/videogular.js"></script>
+<script src="js/main.js"></script>
+
+-->
+

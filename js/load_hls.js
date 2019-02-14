@@ -1,6 +1,6 @@
 
 // Global variables.
-var rootPath = "http://localhost/hls.player/";
+var rootPath = "http://localhost/hlswebpage/";
 var videoPath = rootPath + "videos/";
 var targetPath = videoPath + "m3u8_files/";
 var url = "";
