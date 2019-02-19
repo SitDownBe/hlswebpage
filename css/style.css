@@ -1,0 +1,13 @@
+#video {
+  position: relative;
+  width: auto;
+  height: auto;
+}
+
+.videoContainer {
+  width: 640px;
+  height: 480px;
+  position: fixed;
+  top: 50px;
+  right: 50px;
+}
