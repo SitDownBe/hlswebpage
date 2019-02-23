@@ -24,7 +24,7 @@ function playVideo()
 	    	url = targetPath + inputVideo;
 			startPlayback();
 		}
-		else if (fileExists(videoName, inputVideo))
+		else if (fileExists(inputVideo, videoName))
 		{
 	    	console.log("Starting playback of: " + videoName + ".m3u8");
 			startPlayback();
@@ -67,12 +67,27 @@ function startPlayback()
     hls.on(Hls.Events.MEDIA_ATTACHED, function()
     {
     	hls.loadSource(url);	
-    	hls.on(Hls.Events.MANIFEST_PARSED, function(){});
+    	hls.on(Hls.Events.MANIFEST_PARSED, function(event, data)
+    		{
+    			//console.log(hls.media);
+    			//console.log("Data: " + data);
+    		});
     });
-}
 
+    // Catch and display errors.
+  	hls.on(Hls.Events.ERROR, function (event, data)
+  	{
+	    var errorType = data.type;
+	    var errorDetails = data.details;
+	    var errorFatal = data.fatal;
+	    console.error("Error type: " + errorType);
+	    console.error("Error details: " + errorDetails);
+	    console.error("Error fatal: " + errorFatal);
+  	});
+}
+ 
 // Check if the input file has already been transcoded and stored.
-function fileExists(videoName, inputVideo)
+function fileExists(inputVideo, videoName)
 {
 	console.log("Unsupported format of: " + inputVideo);
 	var xmlhttp = new XMLHttpRequest();
@@ -90,4 +105,47 @@ function fileExists(videoName, inputVideo)
 	{
 		return false;
 	}
+
+}
+
+// Remove all temporarily stored, transcoded video files.
+function purgeVideos() 
+{
+	var xmlhttp = new XMLHttpRequest();
+
+	xmlhttp.onreadystatechange = function() 
+		{
+            if (this.readyState == 4 && this.status == 200)
+            {
+                console.log("Removed all transcoded video files");
+    		}
+		};
+
+	xmlhttp.open("GET", targetPath + "purge_videos.php", true);
+	xmlhttp.send();
+}
+
+// Create a mock playlist to fool the videoplayer into thinking the video
+// currently in play is as long as the original video.
+function createMockPlaylist() 
+{
+
+	var v = document.getElementById("videoDropdown");
+	var inputVideo = v.options[v.selectedIndex].value;
+	var videoName = inputVideo.split(".");
+	var filetype = videoName[videoName.length-1];
+	videoName = videoName[0];
+
+	var xmlhttp = new XMLHttpRequest();
+
+	xmlhttp.onreadystatechange = function() 
+		{
+            if (this.readyState == 4 && this.status == 200)
+            {
+ 				console.log("Mock playlist created");
+    		}
+		};
+
+	xmlhttp.open("GET", rootPath + "videos/create_mock_playlist.php?i=" + inputVideo + "&n=" + videoName, true);
+	xmlhttp.send();
 }

@@ -1,7 +1,7 @@
 #video {
-  position: relative;
-  width: auto;
-  height: auto;
+  position: fixed;
+  width: 640px;
+  height: 480px;
 }
 
 .videoContainer {
