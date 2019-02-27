@@ -66,12 +66,8 @@ function startPlayback()
     // MEDIA_ATTACHED event is fired by hls object once MediaSource is ready
     hls.on(Hls.Events.MEDIA_ATTACHED, function()
     {
-    	hls.loadSource(url);	
-    	hls.on(Hls.Events.MANIFEST_PARSED, function(event, data)
-    		{
-    			//console.log(hls.media);
-    			//console.log("Data: " + data);
-    		});
+    	hls.loadSource(url);
+    	//hls.on(Hls.Events.MANIFEST_PARSED, function(event, data){});
     });
 
     // Catch and display errors.
@@ -79,13 +75,14 @@ function startPlayback()
   	{
 	    var errorType = data.type;
 	    var errorDetails = data.details;
-	    var errorFatal = data.fatal;
-	    console.error("Error type: " + errorType);
-	    console.error("Error details: " + errorDetails);
-	    console.error("Error fatal: " + errorFatal);
+	   	var errorFatal = data.fatal;
+		console.error("Error type: " + errorType);
+		console.error("Error details: " + errorDetails);
+		console.error("Error fatal: " + errorFatal);  
   	});
 }
- 
+
+
 // Check if the input file has already been transcoded and stored.
 function fileExists(inputVideo, videoName)
 {

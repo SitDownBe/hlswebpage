@@ -1,3 +1,4 @@
+
 <?php
 // Script for creating a mock HLS playlist to inform the videoplayer how long
 // the full video will eventually become when the conversion is done.
@@ -38,5 +39,4 @@ while ($videoLength >= 0)
 // Insert end of file.
 $end = "#EXT-X-ENDLIST";
 fwrite($playlist, $end);
-
 ?>
