@@ -1,5 +1,5 @@
-
 <?php
+
 // Script for creating a mock HLS playlist to inform the videoplayer how long
 // the full video will eventually become when the conversion is done.
 
@@ -24,6 +24,7 @@ while ($videoLength >= 0)
 {
 	if ($videoLength >= 2)
 	{
+		// Only works if segment length is exactly 2 seconds.
 		$body = "#EXTINF:2.000000,\n" . $videoName . $i . ".ts\n";
 		fwrite($playlist, $body);
 	}
