@@ -7,6 +7,16 @@ var startSegment = 0;
 var inputVideo = "";
 var videoName = "";
 var url = "";
+var video = document.getElementById('video');
+
+// Triggered when a user seeks in the video.
+video.addEventListener("seeking", function()
+	{
+		// Segment length must be 2 seconds.
+		startSegment = Math.floor(video.currentTime / 2);
+		console.log(startSegment);
+		convertVideo(startSegment);
+	});
 
 // Play the damn video.
 function playVideo() 
@@ -64,28 +74,34 @@ function convertVideo(startSegment)
     		}
 		};
 
-	console.log("Requesting transcoding...");
+	//console.log("Requesting transcoding...");
 	// Send request to server to convert the file.
 	xmlhttp.open("GET", rootPath + "videos/encoder.php?i=" + inputVideo + "&n=" + videoName + "&s=" + startSegment, true);
 	xmlhttp.send();
 }
 
+// Helps JavaScript fall asleep.
+function sleep(ms)
+{
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
+// Helps JavaScript fall asleep.
+async function waitms(ms)
+{
+	await sleep(ms);
+}
+
 // Start playback of video, requires 'controls' in the HTML tag to interact with.
 function startPlayback() 
 {
-	var video = document.getElementById('video');
-
 	//video.removeEventListener("seeking", convertFromCurrentTime(video));
 	// This will create an additional listener every time play is called.
-	video.addEventListener("seeking", function()
-		{
-			// Segment length must be 2 seconds.
-			startSegment = Math.floor(video.currentTime / 2);
-			console.log(startSegment);
-			convertVideo(startSegment);
-		});
 
-	var hls = new Hls();
+	var hls = new Hls(
+		{
+			fragLoadingMaxRetry : 10,
+			maxBufferLength : 4,
+		});
 
 	// Bind video element to HLS element.
     hls.attachMedia(video);
@@ -94,7 +110,10 @@ function startPlayback()
     hls.on(Hls.Events.MEDIA_ATTACHED, function()
     {
     	hls.loadSource(url);
-    	hls.on(Hls.Events.MANIFEST_PARSED, function(event, data){});
+    	hls.on(Hls.Events.MANIFEST_PARSED, function(event, data)
+    		{
+    			video.play();
+    		});
     });
 
     // Catch and display errors.
@@ -103,12 +122,31 @@ function startPlayback()
 	    var errorType = data.type;
 	    var errorDetails = data.details;
 	   	var errorFatal = data.fatal;
-		console.error("Error type: " + errorType);
-		console.error("Error details: " + errorDetails);
-		console.error("Error fatal: " + errorFatal);  
+	   	switch(errorDetails)
+	   	{
+	   		case "fragLoadError":
+	   			hls.stopLoad();
+	   			var xmlhttp = new XMLHttpRequest();
+				xmlhttp.onreadystatechange = function() 
+				{
+			        if (this.readyState == 4 && this.status == 200)
+			        {
+			            // Wake up and smell the ashes.
+			            hls.startLoad();
+					}
+				};
+				// Send request to get some sleep, please.
+				xmlhttp.open("GET", rootPath + "sleep_tight.php", true);
+				xmlhttp.send();
+	   			break;
+	   		default:
+				console.error("Error type: " + errorType);
+				console.error("Error details: " + errorDetails);
+				console.error("Error fatal: " + errorFatal); 
+				break;
+	   	} 
   	});
 }
-
 
 // Check if the input file has already been transcoded and stored.
 function fileExists(inputVideo, videoName)

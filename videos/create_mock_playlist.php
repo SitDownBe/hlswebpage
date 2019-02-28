@@ -8,14 +8,16 @@ $videoName = $_REQUEST["n"];
 //$inputVideo = "aerial.mov";
 //$videoName = "aerial";
 
+$ffprobePath = "/home/workingpotato/ffmpeg-git-20190226-amd64-static/./ffprobe";
+
 // Get the original video length.
-$videoLength = shell_exec("ffprobe -v error -show_entries format=duration -of default=noprint_wrappers=1:nokey=1 " . $inputVideo);
+$videoLength = shell_exec($ffprobePath . " -v error -show_entries format=duration -of default=noprint_wrappers=1:nokey=1 " . $inputVideo);
 
 // Create the mock file.
 $playlist = fopen("m3u8_files/" . $videoName . ".m3u8", "w") or die("Unable to write file");
 
 // Insert headers into it.
-$header = "#EXTM3U\n#EXT-X-VERSION:3\n#EXT-X-TARGETDURATION:2\n#EXT-X-MEDIA-SEQUENCE:0\n";
+$header = "#EXTM3U\n#EXT-X-VERSION:3\n#EXT-X-TARGETDURATION:2\n#EXT-X-MEDIA-SEQUENCE:0\n#EXT-X-PLAYLIST-TYPE:VOD\n";
 fwrite($playlist, $header);
 
 // Insert segment information.
