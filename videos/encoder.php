@@ -12,42 +12,35 @@ $startSegment = $_REQUEST["s"];
 $segments = "m3u8_files/" . $videoName . "%01d.ts";
 $playlist = "m3u8_files/NUL/" . $videoName . ".m3u8";
 // Segment length must be 2 seconds.
-$startTime = gmdate("H:i:s", $startSegment * 2);
+$startTime = $startSegment * 2;
 $ffmpegPath = "/home/workingpotato/ffmpeg-git-20190226-amd64-static/./ffmpeg";
-// Creating a temporary endTime variable, for testing.
-//$endTimes = gmdate("H:i:s", $startSegment * 2 + 4);
-
-// Hold the script until a playlist exists, which is created by another script.
-do
-{
-	if (file_exists("m3u8_files/" . $videoName . ".m3u8"))
-	{
-		echo "Ready\n";
-		break;
-	}
-	sleep(1);
-} while (true);
-
-//$ffmpeg = "ffmpeg -n -i " . $inputVideo . " -c:v libx264 -preset veryfast -s 640x480 -r 30 -crf 21 -maxrate 600k -bufsize 600k -b:a 64k -ar 44100 -g 60 -keyint_min 60 -sc_threshold 0 -f HLS -hls_time 2 -hls_list_size 0 -hls_segment_filename " . $segments . " " . $playlist . " > /dev/null 2>&1 &";
-
-// FFmpeg Transcoding settings.
-$ffmpeg = $ffmpegPath . " -i " . $inputVideo . " -ss " . $startTime . " -c:v libx264 -preset faster -s 640x480 -r 30 -g 60 -keyint_min 60 -sc_threshold 0 -f HLS -hls_time 2 -hls_list_size 0 -hls_flags temp_file -start_number " . $startSegment . " -hls_segment_filename " . $segments . " " . $playlist . " > /dev/null 2>&1 &";
-
-// -to " . $endTimes . "
-// -hls_flags temp_file <--- Seems to be bugged.
-// -hls_flags single_file
-// -hls_segment_filename " . $segments . " 
 
 // Call the system to start converting.
 if (file_exists("m3u8_files/" . $videoName . $startSegment . ".ts") or file_exists("m3u8_files/" . $videoName . $startSegment . ".ts.tmp"))	
 {
-	echo "Converted file already exists";
+	echo "Segment is being converted, or exists but has not been loaded yet";
 }
 else
 {
+	// Hold the script until a playlist exists, which is created by another script.
+	do
+	{
+		if (file_exists("m3u8_files/" . $videoName . ".m3u8"))
+		{
+			echo "Ready\n";
+			break;
+		}
+		sleep(1);
+	} while (true);
+
+	// FFmpeg Transcoding settings.
+	$ffmpeg = $ffmpegPath . " -i " . $inputVideo . " -ss " . $startTime . " -c:v libx264 -preset veryfast -s 640x480 -r 30 -g 60 -keyint_min 60 -sc_threshold 0 -f HLS -hls_time 2 -hls_list_size 0 -hls_flags temp_file -start_number " . $startSegment . " -hls_segment_filename " . $segments . " " . $playlist . " > /dev/null 2>&1 &";
+
 	echo "Starting transcoding\n";
 	echo $ffmpeg;
+	//echo $ffmpeg2;
 	shell_exec($ffmpeg);
+	//shell_exec($ffmpeg2);
 }
 
 echo "\n";
